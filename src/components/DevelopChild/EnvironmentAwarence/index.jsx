@@ -1,6 +1,13 @@
-import React, { Component } from 'react'
-import { DownOutlined, FrownFilled, FrownOutlined, MehOutlined, SmileOutlined } from '@ant-design/icons';
-import { Tree } from 'antd';
+import React, { Component, useState, useEffect } from 'react'
+import {
+  DownOutlined,
+  FrownFilled,
+  FrownOutlined,
+  MehOutlined,
+  SmileOutlined,
+} from '@ant-design/icons'
+import { Tree } from 'antd'
+import axios from 'axios'
 import environment from './index.module.css'
 
 import staticIcon from '../../../asserts/photo/develop/static.png'
@@ -10,10 +17,7 @@ import bodyIcon from '../../../asserts/photo/develop/body.png'
 import dotIcon from '../../../asserts/photo/develop/dot.png'
 import carIcon from '../../../asserts/photo/develop/car.png'
 
-
 import LineChart from '../../Echarts/lineChart'
-
-
 
 // static区域测试数据示例
 const staticTreeData = [
@@ -24,12 +28,22 @@ const staticTreeData = [
       {
         title: 'type: car',
         key: '0-0-0',
-        icon: <img src={dotIcon} style={{width: '15px', height: '15px', marginTop: '-3px'}}/>,
+        icon: (
+          <img
+            src={dotIcon}
+            style={{ width: '15px', height: '15px', marginTop: '-3px' }}
+          />
+        ),
       },
       {
         title: 'camera_source: 0111xxx',
         key: '0-0-1',
-        icon: <img src={dotIcon} style={{width: '15px', height: '15px', marginTop: '-3px'}}/>,
+        icon: (
+          <img
+            src={dotIcon}
+            style={{ width: '15px', height: '15px', marginTop: '-3px' }}
+          />
+        ),
       },
     ],
   },
@@ -40,12 +54,22 @@ const staticTreeData = [
       {
         title: 'type: car',
         key: '0-1-0',
-        icon: <img src={dotIcon} style={{width: '15px', height: '15px', marginTop: '-3px'}}/>,
+        icon: (
+          <img
+            src={dotIcon}
+            style={{ width: '15px', height: '15px', marginTop: '-3px' }}
+          />
+        ),
       },
       {
         title: 'camera_source: 0111xxx',
         key: '0-1-1',
-        icon: <img src={dotIcon} style={{width: '15px', height: '15px', marginTop: '-3px'}}/>,
+        icon: (
+          <img
+            src={dotIcon}
+            style={{ width: '15px', height: '15px', marginTop: '-3px' }}
+          />
+        ),
       },
     ],
   },
@@ -56,17 +80,26 @@ const staticTreeData = [
       {
         title: 'type: car',
         key: '0-2-0',
-        icon: <img src={dotIcon} style={{width: '15px', height: '15px', marginTop: '-3px'}}/>,
+        icon: (
+          <img
+            src={dotIcon}
+            style={{ width: '15px', height: '15px', marginTop: '-3px' }}
+          />
+        ),
       },
       {
         title: 'camera_source: 0111xxx',
         key: '0-2-1',
-        icon: <img src={dotIcon} style={{width: '15px', height: '15px', marginTop: '-3px'}}/>,
+        icon: (
+          <img
+            src={dotIcon}
+            style={{ width: '15px', height: '15px', marginTop: '-3px' }}
+          />
+        ),
       },
     ],
   },
-];
-
+]
 
 // moving区域测试数据示例
 const moveTreeData = [
@@ -77,12 +110,22 @@ const moveTreeData = [
       {
         title: 'type: car',
         key: '0-0-0',
-        icon: <img src={dotIcon} style={{width: '15px', height: '15px', marginTop: '-3px'}}/>,
+        icon: (
+          <img
+            src={dotIcon}
+            style={{ width: '15px', height: '15px', marginTop: '-3px' }}
+          />
+        ),
       },
       {
         title: 'camera_source: 0111xxx',
         key: '0-0-1',
-        icon: <img src={dotIcon} style={{width: '15px', height: '15px', marginTop: '-3px'}}/>,
+        icon: (
+          <img
+            src={dotIcon}
+            style={{ width: '15px', height: '15px', marginTop: '-3px' }}
+          />
+        ),
       },
     ],
   },
@@ -93,12 +136,22 @@ const moveTreeData = [
       {
         title: 'type: car',
         key: '0-1-0',
-        icon: <img src={dotIcon} style={{width: '15px', height: '15px', marginTop: '-3px'}}/>,
+        icon: (
+          <img
+            src={dotIcon}
+            style={{ width: '15px', height: '15px', marginTop: '-3px' }}
+          />
+        ),
       },
       {
         title: 'camera_source: 0111xxx',
         key: '0-1-1',
-        icon: <img src={dotIcon} style={{width: '15px', height: '15px', marginTop: '-3px'}}/>,
+        icon: (
+          <img
+            src={dotIcon}
+            style={{ width: '15px', height: '15px', marginTop: '-3px' }}
+          />
+        ),
       },
     ],
   },
@@ -109,85 +162,123 @@ const moveTreeData = [
       {
         title: 'type: car',
         key: '0-2-0',
-        icon: <img src={dotIcon} style={{width: '15px', height: '15px', marginTop: '-3px'}}/>,
+        icon: (
+          <img
+            src={dotIcon}
+            style={{ width: '15px', height: '15px', marginTop: '-3px' }}
+          />
+        ),
       },
       {
         title: 'camera_source: 0111xxx',
         key: '0-2-1',
-        icon: <img src={dotIcon} style={{width: '15px', height: '15px', marginTop: '-3px'}}/>,
+        icon: (
+          <img
+            src={dotIcon}
+            style={{ width: '15px', height: '15px', marginTop: '-3px' }}
+          />
+        ),
       },
     ],
   },
-];
+]
 
 //图标测试数据
 const chart = {
-  title: "测试结果",
+  title: '测试结果',
   labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-  values: [150, 230, 224, 218, 135, 147, 260]
+  values: [150, 230, 224, 218, 135, 147, 260],
 }
-
 
 // 环境感知模块
 export default class index extends Component {
-
-  state = {
-    
-  }
+  state = { data: null }
 
   constructor(props) {
     super(props)
   }
 
+  // 将数据保存在组件状态中
   componentDidMount() {
-
+    axios
+      .get('http://sjtu-profqian.natapp1.cc/api/threejs/obstacles')
+      .then((response) => {
+        this.setState({ data: response.data })
+      })
+      .catch((error) => {
+        console.error(error)
+      })
   }
 
   render() {
-
+    const { data } = this.state
 
     return (
       <div className={environment.container}>
         <div className={environment.show_box}>
-            <span className={environment.show_box_top}>
-                <img src={staticIcon}/>
-                <p>Static</p>
-            </span>
-            <span className={environment.show_box_bottom}>
-              <Tree
-                showIcon
-                selectable={true}
-                switcherIcon={<img src={bodyIcon} style={{width: '25px', height: '25px', marginTop: '-2px'}}/>}
-                treeData={staticTreeData}
-                style={{backgroundColor: '#323232', color: 'white', fontSize: '18px', fontWeight: 550}}
-              />
-            </span>
+          <span className={environment.show_box_top}>
+            <img src={staticIcon} />
+            <p>Static</p>
+          </span>
+          <span className={environment.show_box_bottom}>
+            <Tree
+              showIcon
+              selectable={true}
+              switcherIcon={
+                <img
+                  src={bodyIcon}
+                  style={{ width: '25px', height: '25px', marginTop: '-2px' }}
+                />
+              }
+              treeData={staticTreeData}
+              style={{
+                backgroundColor: '#323232',
+                color: 'white',
+                fontSize: '18px',
+                fontWeight: 550,
+              }}
+            />
+          </span>
         </div>
 
         <div className={environment.show_box}>
-            <span className={environment.show_box_top}>
-                <img src={moveIcon}/>
-                <p>Moving</p>
-            </span>
-            <span className={environment.show_box_bottom}>
-              <Tree
-                  showIcon
-                  selectable={true}
-                  switcherIcon={<img src={carIcon} style={{width: '25px', height: '25px', marginTop: '-1.5px'}}/>}
-                  treeData={moveTreeData}
-                  style={{backgroundColor: '#323232', color: 'white', fontSize: '18px', fontWeight: 550}}
-              />
-            </span>
+          <span className={environment.show_box_top}>
+            <img src={moveIcon} />
+            <p>Moving</p>
+          </span>
+          <span className={environment.show_box_bottom}>
+            <Tree
+              showIcon
+              selectable={true}
+              switcherIcon={
+                <img
+                  src={carIcon}
+                  style={{ width: '25px', height: '25px', marginTop: '-1.5px' }}
+                />
+              }
+              treeData={moveTreeData}
+              style={{
+                backgroundColor: '#323232',
+                color: 'white',
+                fontSize: '18px',
+                fontWeight: 550,
+              }}
+            />
+          </span>
         </div>
 
         <div className={environment.show_box}>
-            <span className={environment.show_box_top}>
-                <img src={resultIcon}/>
-                <p>Overview</p>
-            </span>
-            <span className={environment.show_box_bottom}>
-              <LineChart title={chart.title} labels={chart.labels} values={chart.values}/>
-            </span>
+          <span className={environment.show_box_top}>
+            <img src={resultIcon} />
+            <p>Overview</p>
+          </span>
+          <span className={environment.show_box_bottom}>
+            <LineChart
+              title={chart.title}
+              labels={chart.labels}
+              values={chart.values}
+            />
+          </span>
         </div>
       </div>
     )
