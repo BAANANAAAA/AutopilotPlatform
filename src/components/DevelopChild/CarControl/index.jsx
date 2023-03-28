@@ -86,54 +86,6 @@ export default class index extends Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {/* {kalmanParameter.map((parameters) => (
-              <TableRow
-                key={parameters.id}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                <TableCell component="th" scope="row" align="center">
-                  Q
-                </TableCell>
-                <TableCell align="left">
-                  {
-                    <table align="left">
-                      <tbody>
-                        {parameters.kalman_parameters.Q.map((row, i) => (
-                          <tr key={i}>
-                            {row.map((col, j) => (
-                              <td key={j}>{col.toFixed(1)}</td>
-                            ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  }
-                </TableCell>
-              </TableRow>
-            ))}
-            {kalmanParameter.map((parameters) => (
-              <TableRow
-                key={parameters.id}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                <TableCell component="th" scope="row" align="center">
-                  R
-                </TableCell>
-                <TableCell align="center">
-                  {
-                    <table align="center">
-                      <tbody>
-                        {parameters.kalman_parameters.R.map((row, i) => (
-                          <tr key={i}>
-                            {row.map((col, j) => (
-                              <td key={j}>{col.toFixed(1)}</td>
-                            ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  }
-                </TableCell>
-              </TableRow>
-            ))} */}
             {kalmanParameter.map((parameters) => (
               <TableRow
                 key={parameters.id}

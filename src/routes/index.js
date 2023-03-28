@@ -4,7 +4,7 @@
 import Login from '../pages/Login'
 import Launch from '../pages/Develop'
 
-import ReactTooltip from 'react-tooltip';
+import ReactTooltip from 'react-tooltip'
 
 export const mainRoutes = [
     {
