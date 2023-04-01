@@ -5,7 +5,6 @@ import develop from './index.module.css'
 import editIcon from '../../asserts/photo/develop/edit.png'
 import switchIcon from '../../asserts/photo/develop/switch.png'
 import openIcon from '../../asserts/photo/develop/open.png'
-import indoorMap from '../../asserts/photo/map.png'
 
 // 导入子模块【环境感知、决策规划、车辆控制】
 import EnvironmentAwarence from '../../components/DevelopChild/EnvironmentAwarence'
@@ -36,12 +35,8 @@ export default class index extends Component {
             loop={true}
             controls={false}
           /> */
-            <img src={indoorMap} width="100%" height="100%" alt="Map" />
+            <MapUpdater />
           }
-        </div>
-
-        <div>
-          <MapUpdater />
         </div>
 
         {/* 悬浮开关 */}
