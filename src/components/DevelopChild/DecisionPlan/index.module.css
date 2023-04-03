@@ -50,3 +50,7 @@
   font-size: 15px;
   font: normal;
 }
+
+.table {
+  overflow: scroll;
+}

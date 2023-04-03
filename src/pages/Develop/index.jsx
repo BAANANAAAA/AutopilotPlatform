@@ -24,20 +24,7 @@ export default class index extends Component {
 
     return (
       <div className={develop.container}>
-        <div className={develop.bg}>
-          {
-            /* <ReactPlayer
-            className="react-player"
-            url="http://www.inchtek.cn/upload/admin/20210917/64a888c5485bf32a7df9f5f58126bb28.mp4"
-            width="100%"
-            height="100%"
-            playing={playing}s
-            loop={true}
-            controls={false}
-          /> */
-            <MapUpdater />
-          }
-        </div>
+        <div className={develop.bg}>{<MapUpdater />}</div>
 
         {/* 悬浮开关 */}
         <div className={develop.tools} style={{ zIndex: pannel ? 0 : 2 }}>
