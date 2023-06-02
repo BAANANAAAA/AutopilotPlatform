@@ -13,3 +13,25 @@
   background-color: #161419;
   z-index: 1;
 }
+
+.point {
+  width: 10px;
+  height: 10px;
+  background-color: purple;
+  border-radius: 50%;
+}
+
+.car {
+  z-index: 2;
+}
+
+.checkbox {
+  height: '5%';
+  width: '5%';
+  float: left;
+}
+
+.checkbox_text {
+  font-size: medium;
+  font-weight: 600;
+}

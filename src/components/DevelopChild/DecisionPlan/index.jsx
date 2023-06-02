@@ -71,7 +71,16 @@ function Coordinate({ x, y }) {
 
 // autopilot status行
 function RowAutopilot(props) {
-  const { carStatus } = props
+  const { data } = props
+  var x_obj = carStatus[0].x_obj
+  var y_obj = carStatus[0].y_obj
+  var Integral_Angle = carStatus[0].Integral_Angle
+  const [v] = data
+  if (v) {
+    x_obj = v.x_obj
+    y_obj = v.y_obj
+    Integral_Angle = v.Integral_Angle
+  }
   const [open, setOpen] = React.useState(true)
 
   return (
@@ -110,10 +119,7 @@ function RowAutopilot(props) {
                     <TableCell align="right">autopilot position</TableCell>
                     <TableCell align="right">
                       <div>
-                        <Coordinate
-                          x={carStatus[0].x_obj}
-                          y={carStatus[0].y_obj}
-                        />
+                        <Coordinate x={x_obj} y={y_obj} />
                       </div>
                     </TableCell>
                   </TableRow>
@@ -125,9 +131,7 @@ function RowAutopilot(props) {
                       },
                     }}>
                     <TableCell align="right">intergral angle</TableCell>
-                    <TableCell align="right">
-                      {carStatus[0].Integral_Angle}
-                    </TableCell>
+                    <TableCell align="right">{Integral_Angle}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
@@ -141,7 +145,14 @@ function RowAutopilot(props) {
 
 // current decision行
 function RowCurrentDecision(props) {
-  const { currentDecision } = props
+  const { data } = props
+  var x = currentDecision[0].x
+  var y = currentDecision[0].y
+  const [v] = data
+  if (v) {
+    x = v.x
+    y = v.y
+  }
   const [open, setOpen] = React.useState(true)
 
   return (
@@ -182,10 +193,7 @@ function RowCurrentDecision(props) {
                     </TableCell>
                     <TableCell align="right">
                       <div>
-                        <Coordinate
-                          x={currentDecision[0].x}
-                          y={currentDecision[0].y}
-                        />
+                        <Coordinate x={x} y={y} />
                       </div>
                     </TableCell>
                   </TableRow>
@@ -201,7 +209,21 @@ function RowCurrentDecision(props) {
 
 // past decisions行
 function RowPastDecisions(props) {
-  const { pastDecision } = props
+  const { data } = props
+  var point_1 = pastDecision[0].point_1
+  var point_2 = pastDecision[0].point_2
+  var point_3 = pastDecision[0].point_3
+  var point_4 = pastDecision[0].point_4
+  var point_5 = pastDecision[0].point_5
+  const [v] = data
+  if (v) {
+    point_1 = pastDecision[0].point_1
+    point_2 = pastDecision[0].point_2
+    point_3 = pastDecision[0].point_3
+    point_4 = pastDecision[0].point_4
+    point_5 = pastDecision[0].point_5
+  }
+
   const [open, setOpen] = React.useState(true)
 
   return (
@@ -242,10 +264,7 @@ function RowPastDecisions(props) {
                     </TableCell>
                     <TableCell align="right">
                       <div>
-                        <Coordinate
-                          x={pastDecision[0].point_1.x}
-                          y={pastDecision[0].point_1.y}
-                        />
+                        <Coordinate x={point_1.x} y={point_1.y} />
                       </div>
                     </TableCell>
                   </TableRow>
@@ -260,10 +279,7 @@ function RowPastDecisions(props) {
                     </TableCell>
                     <TableCell align="right">
                       <div>
-                        <Coordinate
-                          x={pastDecision[0].point_2.x}
-                          y={pastDecision[0].point_2.y}
-                        />
+                        <Coordinate x={point_2.x} y={point_2.y} />
                       </div>
                     </TableCell>
                   </TableRow>
@@ -278,10 +294,7 @@ function RowPastDecisions(props) {
                     </TableCell>
                     <TableCell align="right">
                       <div>
-                        <Coordinate
-                          x={pastDecision[0].point_3.x}
-                          y={pastDecision[0].point_3.y}
-                        />
+                        <Coordinate x={point_3.x} y={point_3.y} />
                       </div>
                     </TableCell>
                   </TableRow>
@@ -296,10 +309,7 @@ function RowPastDecisions(props) {
                     </TableCell>
                     <TableCell align="right">
                       <div>
-                        <Coordinate
-                          x={pastDecision[0].point_4.x}
-                          y={pastDecision[0].point_4.y}
-                        />
+                        <Coordinate x={point_4.x} y={point_4.y} />
                       </div>
                     </TableCell>
                   </TableRow>
@@ -314,10 +324,7 @@ function RowPastDecisions(props) {
                     </TableCell>
                     <TableCell align="right">
                       <div>
-                        <Coordinate
-                          x={pastDecision[0].point_5.x}
-                          y={pastDecision[0].point_5.y}
-                        />
+                        <Coordinate x={point_5.x} y={point_5.y} />
                       </div>
                     </TableCell>
                   </TableRow>
@@ -340,31 +347,33 @@ export default class index extends Component {
   }
 
   componentDidMount() {
-    axios
-      .get('http://sjtu-profqian.natapp1.cc/api/threejs/PathPlan')
-      .then((response) => {
-        this.setState({ data: response.data })
-      })
-      .catch((error) => {
-        console.error(error)
-      })
+    // axios
+    //   .get('http://sjtu-profqian.natapp1.cc/api/threejs/PathPlan')
+    //   .then((response) => {
+    //     this.setState({ data: response.data })
+    //   })
+    //   .catch((error) => {
+    //     console.error(error)
+    //   })
+    this.setState({ mqttData: this.props })
   }
 
   render() {
-    const { data } = this.state
+    const { mqttData } = this.props
+    const { data } = mqttData
     return (
       <div className={decision.table}>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 100 }} aria-label="collapsible table">
-            <RowAutopilot carStatus={carStatus} />
+            <RowAutopilot data={data} />
           </Table>
 
           <Table sx={{ minWidth: 100 }} aria-label="collapsible table">
-            <RowCurrentDecision currentDecision={currentDecision} />
+            <RowCurrentDecision data={data} />
           </Table>
 
           <Table sx={{ minWidth: 100 }} aria-label="collapsible table">
-            <RowPastDecisions pastDecision={pastDecision} />
+            <RowPastDecisions data={data} />
           </Table>
         </TableContainer>
       </div>

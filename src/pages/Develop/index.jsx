@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useEffect, useState } from 'react'
 import ReactPlayer from 'react-player'
 
 import develop from './index.module.css'
@@ -7,24 +7,37 @@ import switchIcon from '../../asserts/photo/develop/switch.png'
 import openIcon from '../../asserts/photo/develop/open.png'
 
 // 导入子模块【环境感知、决策规划、车辆控制】
+import ObjectRenderContext from './ObjectRenderContext'
 import EnvironmentAwarence from '../../components/DevelopChild/EnvironmentAwarence'
 import DecisionPlan from '../../components/DevelopChild/DecisionPlan'
 import CarControl from '../../components/DevelopChild/CarControl'
 import MapUpdater from '../../components/DevelopChild/MapUpdater'
+import { message } from 'antd'
 
 export default class index extends Component {
   state = {
     menuFlag: 1, //左边顶部按钮切换标志，1，2，3
     playing: true,
     pannel: true,
+    selectedKeys: [],
+  }
+
+  constructor(props) {
+    super(props)
+    // this.state = {
+    //   objectStates: { 1: true }, // 初始状态为空对象
+    // }
+    // this.toggleObjectRender = this.toggleObjectRender.bind(this)
   }
 
   render() {
     let { menuFlag, playing, pannel } = this.state
+    const { mqttData } = this.props
+    console.log('this is data in develop', mqttData)
 
     return (
       <div className={develop.container}>
-        <div className={develop.bg}>{<MapUpdater />}</div>
+        <div className={develop.bg}>{<MapUpdater mqttData={mqttData} />}</div>
 
         {/* 悬浮开关 */}
         <div className={develop.tools} style={{ zIndex: pannel ? 0 : 2 }}>
@@ -92,22 +105,14 @@ export default class index extends Component {
 
           <div className={develop.left_bottom}>
             {menuFlag == 1 ? (
-              <EnvironmentAwarence />
+              <EnvironmentAwarence mqttData={mqttData} />
             ) : menuFlag == 2 ? (
-              <DecisionPlan />
+              <DecisionPlan mqttData={mqttData} />
             ) : (
-              <CarControl />
+              <CarControl mqttData={mqttData} />
             )}
           </div>
-          {/* <div className={develop.box} style={{marginTop: '0px'}}>环境感知</div>
-                    <div className={develop.box}>决策规划</div>
-                    <div className={develop.box}>车辆控制</div> */}
         </div>
-
-        {/* <div className={develop.left}>
-                    
-                </div>
-                <div className={develop.right}></div> */}
       </div>
     )
   }

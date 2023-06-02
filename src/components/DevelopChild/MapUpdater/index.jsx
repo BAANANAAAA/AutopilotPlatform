@@ -1,13 +1,13 @@
 import React, { Component, useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import indoormap from './index.module.css'
+import ObjectStateContext from '../../../App.js'
 
-import staticIcon from '../../../asserts/photo/develop/static.png'
-import moveIcon from '../../../asserts/photo/develop/move.png'
-import resultIcon from '../../../asserts/photo/develop/result.png'
 import indoorMap from '../../../asserts/photo/map.png'
+import carIcon from '../../../asserts/photo/develop/car.png'
+import { object } from 'prop-types'
 
-const pastDecision = [
+const pastDecisionStatic = [
   {
     point_1: {
       x: 250,
@@ -32,7 +32,7 @@ const pastDecision = [
   },
 ]
 
-const currentDecision = [
+const currentDecisionStatic = [
   {
     objID: 1,
     point: 1,
@@ -41,16 +41,43 @@ const currentDecision = [
   },
 ]
 
-const carStatus = [
+const carStatusStatic = [
   {
     _id: '630383a0687c069ca0864c40e',
     id: 1,
-    x: 10,
-    y: 11,
+    x: 300,
+    y: 250,
     objID: 1,
     x_obj: 800,
     y_obj: 200,
-    Integral_Angle: 90.0,
+    Integral_Angle: 0,
+  },
+]
+
+const environmentObjects = [
+  {
+    id: 1,
+    type: 'truck',
+    location: { x: 600, y: 350 },
+    dimensions: { w: 1.0, l: 1.0 },
+    rotation: 60,
+    is_static: 0,
+    update_rate: 4,
+    state_vector: { s: 1.0, v: 1.0 },
+    current_prediction: { x: 1.0, y: 1.0 },
+    camera_source: '000ffff',
+  },
+  {
+    id: 2,
+    type: 'truck',
+    location: { x: 200, y: 300 },
+    dimensions: { w: 1.0, l: 1.0 },
+    rotation: 30,
+    is_static: 0,
+    update_rate: 4,
+    state_vector: { s: 1.0, v: 1.0 },
+    current_prediction: { x: 1.0, y: 1.0 },
+    camera_source: '000xxxx',
   },
 ]
 
@@ -67,14 +94,28 @@ function convertCoord(x, y) {
   return { mapX, mapY }
 }
 
-function getX(data) {
-  const x = data[0].x
-  return x
-}
+function CarAnimation() {
+  const [position, setPosition] = useState({ x: 700, y: 250 })
 
-function getY(data) {
-  const y = data[0].y
-  return y
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const x = Math.floor(Math.random() * window.innerWidth)
+      const y = Math.floor(Math.random() * window.innerHeight)
+      setPosition({ x, y })
+    }, 1000)
+    return () => clearInterval(intervalId)
+  }, [])
+
+  return (
+    <div
+      style={{
+        position: 'relative',
+        backgroundImage: { indoorMap },
+        backgroundPosition: `${position.x}px ${position.y}px`,
+      }}>
+      🚗
+    </div>
+  )
 }
 
 // 在地图上渲染点
@@ -120,30 +161,107 @@ const axisStyleY = {
   strokeWidth: '5px',
 }
 
+function RowAutopilot(props) {
+  const { data } = props
+  const [showRect, setShowRect] = React.useState(true)
+
+  function handleCheckboxChange(event) {
+    setShowRect(event.target.checked)
+  }
+
+  return (
+    <rect
+      x={object.location.x}
+      y={object.location.y}
+      width="60"
+      height="30"
+      fill="green"
+      transform={`rotate(${-object.rotation} ${object.location.x} ${
+        object.location.y
+      })`}
+    />
+  )
+}
+
 export default class index extends Component {
-  state = { data: null }
+  state = {
+    mqttData: this.props,
+    showRect: {
+      1: true,
+      2: true,
+      3: true,
+      4: true,
+      5: true,
+    },
+  }
+  // static contextType = ObjectRenderContext
 
   constructor(props) {
     super(props)
   }
 
+  handleCheckboxChange = (event, id) => {
+    this.setState((prevState) => ({
+      showRect: {
+        ...prevState.showRect,
+        [id]: event.target.checked,
+      },
+    }))
+  }
+
   componentDidMount() {
-    axios
-      .get('http://sjtu-profqian.natapp1.cc/api/threejs/PathPlan')
-      .then((response) => {
-        this.setState({ data: response.data })
-      })
-      .catch((error) => {
-        console.error(error)
-      })
+    //   axios
+    //     .get('http://sjtu-profqian.natapp1.cc/api/threejs/PathPlan')
+    //     .then((response) => {
+    //       this.setState({ data: response.data })
+    //     })
+    //     .catch((error) => {
+    //       console.error(error)
+    //     })
+    this.setState({ mqttData: this.props })
   }
 
   render() {
-    // const { data } = this.state
+    const { objectStates } = this.context
+    const { showRect } = this.state
+    const { mqttData } = this.props
+    const { data } = mqttData
+    // console.log('this is data!', data)
+
+    var carStatus = carStatusStatic
+    var pastDecision = pastDecisionStatic
+    var currentDecision = currentDecisionStatic
+
+    const [v] = data
+    console.log('this is v!', v)
+    if (v) {
+      carStatus = v
+      console.log('this is v.location!', v.location.x)
+      pastDecision = v.pastDecision
+      currentDecision = v.currentDecision
+    }
 
     return (
       <div className={indoormap.container}>
-        <div style={{ height: '100vh', width: '75vw' }}>
+        <div className={indoormap.checkbox}>
+          {environmentObjects.map((object) => (
+            <div key={object.id} className={indoormap.checkbox_text}>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={showRect[object.id]}
+                  onChange={(e) => this.handleCheckboxChange(e, object.id)}
+                />
+                <img
+                  src={carIcon}
+                  style={{ width: '25px', height: '25px', marginTop: '-2px' }}
+                />
+                {`${object.type} ${object.id}`}
+              </label>
+            </div>
+          ))}
+        </div>
+        <div style={{ height: '100vh', width: '70vw' }}>
           <svg
             style={{ height: '100%', width: '100%', objectFit: 'contain' }}
             viewBox={`0 0 ${mapWidth} ${mapHeight}`}>
@@ -203,6 +321,45 @@ export default class index extends Component {
 
             {/* 绘制坐标原点 */}
             <circle cx={originX} cy={originY} r="6" fill="red" />
+
+            {/* 渲染小车 */}
+            {/* <CarAnimation /> */}
+            <rect
+              x={carStatus[0].x}
+              y={carStatus[0].y}
+              // x={carStatus.location.x}
+              // y={carStatus.location.y}
+              width="60"
+              height="30"
+              fill="purple"
+              transform={`rotate(${-carStatus[0].Integral_Angle} ${
+                carStatus[0].x
+              } ${carStatus[0].y})`}
+            />
+            {renderTextOnMap(
+              carStatus[0].x + 20,
+              carStatus[0].y,
+              // carStatus.location.x + 20,
+              // carStatus.location.y,
+              'autopilot',
+              'purple'
+            )}
+
+            {environmentObjects.map((object) =>
+              // objectStates[object.id] ? (
+              this.state.showRect[object.id] ? (
+                <rect
+                  x={object.location.x}
+                  y={object.location.y}
+                  width="60"
+                  height="30"
+                  fill="green"
+                  transform={`rotate(${-object.rotation} ${object.location.x} ${
+                    object.location.y
+                  })`}
+                />
+              ) : null
+            )}
 
             {renderTextOnMap(
               pastDecision[0].point_1.x,

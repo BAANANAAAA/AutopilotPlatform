@@ -17,6 +17,8 @@
     "element-react": "^1.4.34",
     "element-theme-default": "^1.4.13",
     "moment": "^2.29.4",
+    "mqtt": "^4.3.7",
+    "precompiled-mqtt": "^4.3.14-beta",
     "prop-types": "^15.8.1",
     "pubsub-js": "^1.9.4",
     "react": "^18.1.0",
